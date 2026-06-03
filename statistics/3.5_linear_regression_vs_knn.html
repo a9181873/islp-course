@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.5 線性迴歸與 K-近鄰法比較 — ISLP 統計學習課程</title>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>:root{--bg:#0d1117;--fg:#c9d1d9;--card:#161b22;--border:#30363d;--accent:#58a6ff;--accent2:#3fb950;--warn:#d2991d;--danger:#f85149;--code-bg:#1a1e24;--tag-bg:#1f2a37}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans TC',sans-serif;line-height:1.7;max-width:960px;margin:0 auto;padding:2rem 1.5rem}header{text-align:center;padding:2rem 0 1.5rem;border-bottom:2px solid var(--border);margin-bottom:2rem}header h1{font-size:2rem;color:var(--accent);margin-bottom:.5rem}header .meta{font-size:.9rem;color:#8b949e}.meta span{margin:0 .5rem}.difficulty{color:var(--warn);font-weight:700}.tags{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.8rem}.tag{background:var(--tag-bg);color:var(--accent);padding:.2rem .7rem;border-radius:12px;font-size:.8rem;border:1px solid var(--border)}h2{color:var(--accent);font-size:1.5rem;margin:2.5rem 0 1rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}h3{color:var(--accent2);font-size:1.2rem;margin:1.8rem 0 .8rem}p{margin:.8rem 0}.callout{background:#1a2332;border-left:4px solid var(--accent);padding:1rem 1.2rem;margin:1.2rem 0;border-radius:0 6px 6px 0}.callout strong{color:var(--accent)}.callout-warn{background:#2a1f0a;border-left:4px solid var(--warn);padding:1rem 1.2rem;margin:1.2rem 0;border-radius:0 6px 6px 0}.ref-box{background:#1c2128;border:1px solid var(--border);padding:.8rem 1rem;margin:1rem 0;border-radius:6px;font-size:.9rem;color:#8b949e}.ref-box::before{content:'📚 '}.formula{text-align:center;margin:1.5rem 0;padding:1rem;background:var(--card);border-radius:8px;border:1px solid var(--border)}.formula-label{text-align:right;color:#8b949e;font-size:.85rem;margin-top:.3rem}pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.2rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.5}code{font-family:'JetBrains Mono','Fira Code','Consolas',monospace}pre code{background:none;padding:0}table{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.9rem}th,td{border:1px solid var(--border);padding:.7rem .9rem;text-align:left}th{background:var(--card);color:var(--accent);font-weight:600}.section-nav{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.2rem;margin:1.5rem 0;font-size:.9rem}.section-nav a{color:var(--accent);text-decoration:none}.section-nav a:hover{text-decoration:underline}footer{text-align:center;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:.85rem;color:#8b949e}ul,ol{margin:.8rem 0 .8rem 1.8rem;line-height:1.8}</style>
+</head>
+<body>
+
+<header>
+  <h1>3.5 線性迴歸與 K-近鄰法比較</h1>
+  <div class="meta">
+    <span>📖 ISLP §3.5</span>
+    <span>📄 pp. 114–122</span>
+    <span class="difficulty">★★★☆☆</span>
+    <span>⏱️ 約 35 分鐘</span>
+  </div>
+  <div class="tags">
+    <span class="tag">參數 vs 非參數</span>
+    <span class="tag">KNN</span>
+    <span class="tag">偏差-方差權衡</span>
+    <span class="tag">維度災難</span>
+    <span class="tag">模型選擇</span>
+    <span class="tag">懶惰學習</span>
+  </div>
+</header>
+
+<div class="section-nav">
+  <a href="3.2_multiple_linear_regression.html">← 3.2 多元線性迴歸</a>
+  <a href="../index.html">📑 課程首頁</a>
+  <span>3.6 Lab → 即將推出</span>
+</div>
+
+<h2>兩種建模哲學的對決</h2>
+
+<p>
+在前幾節，我們深入學習了<strong>線性迴歸</strong>——它假設 <em>f</em> 具有特定的參數形式：\( f(X) = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p \)。這是一種<strong>參數方法</strong>（parametric method）。
+</p>
+
+<p>
+現在，我們介紹一種完全不同的方法：<strong>K-近鄰法</strong>（K-Nearest Neighbors, KNN）——它不對 <em>f</em> 的形式做任何假設，屬於<strong>非參數方法</strong>（non-parametric method）。這兩種方法代表了統計學習中兩種對立的建模哲學。
+</p>
+
+<div class="callout">
+<strong>🔑 核心問題：</strong>何時應該使用參數方法（如線性迴歸），何時應該使用非參數方法（如 KNN）？答案取決於數據的性質、變數數量、以及你的目標（預測 vs 解釋）。
+</div>
+
+<h2>參數方法 vs 非參數方法</h2>
+
+<table>
+<tr><th>特性</th><th>參數方法（線性迴歸）</th><th>非參數方法（KNN）</th></tr>
+<tr><td>對 <em>f</em> 的假設</td><td>假設特定形式（如線性）</td><td>無假設，讓數據說話</td></tr>
+<tr><td>參數數量</td><td>固定（p+1 個 β）</td><td>隨數據增長（隱含）</td></tr>
+<tr><td>訓練方式</td><td>一次性擬合參數</td><td>記住全部數據（懶惰學習）</td></tr>
+<tr><td>預測速度</td><td>極快（只算點積）</td><td>慢（需掃描全部訓練數據）</td></tr>
+<tr><td>所需數據量</td><td>較少</td><td>較多</td></tr>
+<tr><td>可解釋性</td><td>高（每個 β 都有意義）</td><td>低（黑箱）</td></tr>
+<tr><td>靈活性</td><td>低（受限於假設）</td><td>高（理論上可擬合任何形狀）</td></tr>
+</table>
+
+<h2>KNN 如何運作？</h2>
+
+<p>給定一個預測點 \( x_0 \)，KNN 找出訓練集中距離 \( x_0 \) 最近的 <em>K</em> 個點，然後取這些點的 \( Y \) 值的平均作為預測值：</p>
+
+<div class="formula">
+\[
+\hat{f}(x_0) = \frac{1}{K} \sum_{i \in \mathcal{N}_0} y_i
+\]
+<div class="formula-label">其中 \(\mathcal{N}_0\) 是離 \(x_0\) 最近的 K 個訓練點的索引集合</div>
+</div>
+
+<p>距離通常使用<strong>歐氏距離</strong>（Euclidean distance）：</p>
+
+<div class="formula">
+\[
+d(x_0, x_i) = \sqrt{\sum_{j=1}^{p} (x_{0j} - x_{ij})^2}
+\]
+</div>
+
+<div class="callout">
+<strong>💡 懶惰學習（Lazy Learning）：</strong>KNN 沒有真正的「訓練階段」——它只是記住整個訓練集。所有計算都在預測時進行。這與線性迴歸形成鮮明對比：線性迴歸在訓練時計算出 β 係數，預測時只需一次點積運算。
+</div>
+
+<h2>場景一：真實關係接近線性時</h2>
+
+<p>當 \( f(X) \) 的真實形式<strong>接近線性</strong>時，參數方法的優勢顯而易見：</p>
+
+<ul>
+<li><strong>線性迴歸</strong>表現最佳——它的假設正好符合數據的真實結構，偏差和方差都低。</li>
+<li><strong>KNN（K=10）</strong>表現尚可，但測試誤差略高於線性迴歸——因為它沒有利用線性結構的先驗知識。</li>
+<li><strong>KNN（K=1）</strong>嚴重過擬合——每個預測只依賴一個鄰居，模型對訓練數據的雜訊極度敏感，測試誤差非常高。</li>
+</ul>
+
+<div class="callout-warn">
+<strong>⚠️ 關鍵教訓：</strong>當數據結構簡單時，簡單的模型通常勝出。沒必要為接近線性的數據使用高度靈活的模型——這樣只會增加方差，而不會減少偏差。
+</div>
+
+<h2>場景二：真實關係高度非線性時</h2>
+
+<p>當 \( f(X) \) 的真實形式<strong>明顯非線性</strong>時，情況完全逆轉：</p>
+
+<ul>
+<li><strong>線性迴歸</strong>表現差——它強行用一條直線擬合彎曲的數據，導致<strong>高偏差</strong>（模型本身就不對）。</li>
+<li><strong>KNN（K=1~3）</strong>能很好地捕捉非線性模式，偏差很低，但如果數據有雜訊，方差會很大。</li>
+<li><strong>KNN（K=5~10）</strong>通常表現最佳——在偏差和方差之間取得良好平衡。</li>
+</ul>
+
+<div class="callout">
+<strong>🔑 關鍵教訓：</strong>K 是 KNN 的關鍵超參數：
+<ul>
+<li><strong>K 小</strong> → 低偏差、高方差（過擬合風險）</li>
+<li><strong>K 大</strong> → 高偏差、低方差（欠擬合風險）</li>
+<li>最佳 K 通常通過交叉驗證（cross-validation）來選擇</li>
+</ul>
+</div>
+
+<h2>偏差-方差權衡：本章最重要的概念</h2>
+
+<p>線性迴歸 vs KNN 的比較，完美體現了統計學習中最核心的<strong>偏差-方差權衡</strong>（Bias-Variance Tradeoff）：</p>
+
+<table>
+<tr><th>模型</th><th>偏差（Bias）</th><th>方差（Variance）</th><th>適用場景</th></tr>
+<tr><td>線性迴歸</td><td>線性數據：低<br>非線性數據：高</td><td>始終低</td><td>線性數據、高維數據、需解釋性</td></tr>
+<tr><td>KNN（K 大）</td><td>高（過度平滑）</td><td>低</td><td>高雜訊數據</td></tr>
+<tr><td>KNN（K 小）</td><td>低</td><td>高（過擬合）</td><td>低雜訊、低維度、大數據集</td></tr>
+</table>
+
+<div class="formula">
+\[
+\text{期望測試 MSE} = \text{Var}(\hat{f}(x_0)) + [\text{Bias}(\hat{f}(x_0))]^2 + \text{Var}(\epsilon)
+\]
+<div class="formula-label">測試 MSE 可以分解為方差、偏差平方、和不可約誤差三部分</div>
+</div>
+
+<p>線性迴歸的方差很低（因為只估計 p+1 個參數），但如果真實關係非線性，偏差可能很高。KNN 可以通過調小 K 來降低偏差，但代價是方差急劇增加。</p>
+
+<h2>維度災難（Curse of Dimensionality）</h2>
+
+<p>這是 KNN 最致命的弱點。當預測變數的數量 <em>p</em> 增加時：</p>
+
+<ul>
+<li><strong>距離失去意義：</strong>在高維空間中，任意兩點之間的距離趨於均勻——所有點都變得差不多「遠」，「最近鄰居」的概念不復存在。</li>
+<li><strong>數據密度暴跌：</strong>要保持相同的數據密度（每個單位體積內的訓練點數），所需的數據量必須隨 <em>p</em> 呈<strong>指數增長</strong>。例如，從 p=1 到 p=10，若原本 100 個點足夠，現在可能需要 \(100^{10}\) 個點。</li>
+<li><strong>線性迴歸不受此影響：</strong>因為線性迴歸用參數來總結數據的結構，變數增加只會線性增加參數數量（p+1 個），而非指數級。</li>
+</ul>
+
+<div class="callout-warn">
+<strong>⚠️ 實務鐵律：</strong>當 p > 10 時，除非你擁有數百萬條數據，否則線性迴歸（或正則化版本如 Ridge/Lasso）幾乎總是優於 KNN。在現代機器學習中，這個教訓被反覆驗證。
+</div>
+
+<h2>Python 實作：比較線性迴歸與 KNN</h2>
+
+<pre><code class="language-python">import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+
+# 生成非線性數據
+np.random.seed(42)
+X = np.random.uniform(-3, 3, 200).reshape(-1, 1)
+y = X.ravel()**3 - 3*X.ravel() + np.random.normal(0, 2, 200)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+
+# 線性迴歸
+lr = LinearRegression().fit(X_train, y_train)
+lr_mse = mean_squared_error(y_test, lr.predict(X_test))
+
+# KNN 多種 K 值
+for k in [1, 3, 5, 10, 20]:
+    knn = KNeighborsRegressor(n_neighbors=k).fit(X_train, y_train)
+    knn_mse = mean_squared_error(y_test, knn.predict(X_test))
+    print(f"K={k:2d}  MSE={knn_mse:.3f}")
+
+print(f"LR     MSE={lr_mse:.3f}")
+# 預期：K=3~5 的 KNN 明顯優於線性迴歸（因為數據是三次方非線性）
+</code></pre>
+
+<h2>實務決策框架</h2>
+
+<p>面對一個新的回歸問題，該如何選擇模型？以下是一個實用的決策流程：</p>
+
+<ol>
+<li><strong>始終從線性迴歸開始。</strong>它簡單、快速、可解釋。如果它的表現已經足夠好，就沒有必要複雜化。</li>
+<li><strong>檢查殘差圖。</strong>如果殘差顯示明顯的模式（例如 U 形曲線），說明線性假設不成立。</li>
+<li><strong>如果 p ≤ 4 且數據明顯非線性：</strong>嘗試 KNN，用交叉驗證選擇最佳 K。</li>
+<li><strong>如果 p > 10：</strong>堅持使用線性迴歸或正則化變體（第 6 章），KNN 在高維度下幾乎必輸。</li>
+<li><strong>用測試集公平比較。</strong>最終決定應基於測試誤差，而非主觀偏好。</li>
+</ol>
+
+<div class="callout">
+<strong>📌 一句話總結：</strong>線性迴歸是「相信結構」的方法，KNN 是「相信鄰居」的方法。哪種信念更適合你的數據，取決於數據本身的性質。
+</div>
+
+<div class="section-nav">
+  <a href="3.2_multiple_linear_regression.html">← 3.2 多元線性迴歸</a>
+  <a href="../index.html">📑 課程首頁</a>
+  <span>3.6 Lab → 即將推出</span>
+</div>
+
+<footer>
+<p>📖 James, Witten, Hastie, Tibshirani (2023) <em>An Introduction to Statistical Learning with Applications in Python</em>, §3.5, pp. 114–122. Springer.</p>
+<p>© 2026 DKY 學習中心 · 用數據思考，用模型說話</p>
+</footer>
+
+<script>hljs.highlightAll();</script>
+</body>
+</html>

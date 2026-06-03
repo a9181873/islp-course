@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>從儲存到體驗：LLM 代理記憶機制的演進 — DKY 學習中心</title>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>:root{--bg:#0d1117;--fg:#c9d1d9;--card:#161b22;--border:#30363d;--accent:#58a6ff;--accent2:#3fb950;--warn:#d2991d;--tag-bg:#1f2a37}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans TC',sans-serif;line-height:1.7;max-width:860px;margin:0 auto;padding:2rem 1.5rem}header{text-align:center;padding:2rem 0 1.5rem;border-bottom:2px solid var(--border);margin-bottom:2rem}header h1{font-size:1.8rem;color:var(--accent);margin-bottom:.5rem}header .meta{font-size:.9rem;color:#8b949e}.tags{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.8rem}.tag{background:var(--tag-bg);color:var(--accent);padding:.2rem .7rem;border-radius:12px;font-size:.8rem;border:1px solid var(--border)}h2{color:var(--accent);font-size:1.4rem;margin:2.2rem 0 1rem;padding-bottom:.3rem;border-bottom:1px solid var(--border)}h3{color:var(--accent2);font-size:1.1rem;margin:1.5rem 0 .6rem}p{margin:.7rem 0}.tldr{background:linear-gradient(135deg,#1a2332,#162030);border:1px solid var(--accent);border-radius:8px;padding:1.2rem 1.5rem;margin:1.2rem 0}table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.88rem}th,td{border:1px solid var(--border);padding:.6rem .9rem;text-align:left}th{background:var(--card);color:var(--accent)}.callout{background:#1a2332;border-left:4px solid var(--accent);padding:.9rem 1.2rem;margin:1rem 0;border-radius:0 6px 6px 0}footer{text-align:center;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:.85rem;color:#8b949e}ul,ol{margin:.6rem 0 .6rem 1.8rem}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}</style>
+</head>
+<body>
+
+<header>
+  <h1>從儲存到體驗：LLM 代理記憶機制的演進</h1>
+  <div class="meta">
+    <span>📄 arXiv: 2605.06716</span>
+    <span>👥 Jinghao Luo et al. (9 位作者)</span>
+    <span>📅 2026-05-07</span>
+    <span>📋 Survey</span>
+  </div>
+  <div class="tags">
+    <span class="tag">Agent Memory</span>
+    <span class="tag">LLM</span>
+    <span class="tag">Experience Learning</span>
+    <span class="tag">Storage→Reflection→Experience</span>
+  </div>
+</header>
+
+<div class="tldr">
+  <strong>🎯 一句話結論：</strong>LLM 代理的記憶機制正經歷三個演化階段——<strong>儲存（Storage）→ 反思（Reflection）→ 體驗（Experience）</strong>——只有在「體驗」階段，代理才真正從歷史中「學習」而不僅僅是「回憶」。
+</div>
+
+<h2>📊 論文關鍵數據</h2>
+<table>
+<tr><th>指標</th><th>內容</th></tr>
+<tr><td>論文類型</td><td>綜述（Survey）</td></tr>
+<tr><td>涵蓋範圍</td><td>200+ 篇論文，2022–2026</td></tr>
+<tr><td>核心框架</td><td>三階段演化：Storage → Reflection → Experience</td></tr>
+<tr><td>記憶分類</td><td>6 類：情節、語義、程序、工作、外部化、混合</td></tr>
+<tr><td>發布日期</td><td>2026 年 5 月 7 日</td></tr>
+</table>
+
+<h2>🔬 機制拆解：三個演化階段</h2>
+
+<h3>階段一：儲存（Storage）— 2022–2023</h3>
+<p>代理將所有互動歷史以原始文本記錄。檢索依靠簡單的 embedding 相似度匹配。<strong>核心限制：</strong>缺乏選擇性——所有內容都被儲存，導致上下文窗口浪費和資訊雜訊。代表系統包括 Generative Agents（Park et al., 2023）和 MemGPT（Packer et al., 2023）。</p>
+
+<h3>階段二：反思（Reflection）— 2024–2025</h3>
+<p>代理不僅記錄，還會<strong>精煉</strong>歷史痕跡：摘要、綜合、建立事件之間的因果連結。引入了選擇性「遺忘」機制以管理記憶容量。<strong>關鍵進步：</strong>透過對自身歷史的二次推理，大幅提升記憶品質。代表系統包括 Reflexion（Shinn et al., 2024）、E-Mem（Wang et al., 2026）和 A-MEM。</p>
+
+<h3>階段三：體驗（Experience）— 2025–2026</h3>
+<p>這是質的飛躍：代理將歷史痕跡<strong>抽象化為結構化知識</strong>——形成可跨情境遷移的規則、原則和心智模型。<strong>核心突破：</strong>記憶不再是「資料庫查詢」，而是「經驗遷移」——能泛化到未見過的情境，而非僅僅模式匹配。代表系統包括 AgeMem（2026）、ENGRAM（Cheng et al., 2026）和 SYNAPSE。</p>
+
+<h2>📈 三階段對比</h2>
+<table>
+<tr><th>特性</th><th>Storage</th><th>Reflection</th><th>Experience</th></tr>
+<tr><td>處理方式</td><td>原始記錄</td><td>摘要 + 精煉</td><td>抽象 + 泛化</td></tr>
+<tr><td>記憶品質</td><td>低（雜訊多）</td><td>中（有篩選）</td><td>高（結構化知識）</td></tr>
+<tr><td>泛化能力</td><td>無</td><td>有限（相似情境）</td><td>強（跨情境遷移）</td></tr>
+<tr><td>典型系統</td><td>MemGPT</td><td>Reflexion, A-MEM</td><td>AgeMem, ENGRAM</td></tr>
+<tr><td>Context Window 效率</td><td>低</td><td>中</td><td>高</td></tr>
+</table>
+
+<h2>🏗️ 落地應用場景</h2>
+<ol>
+<li><strong>個人 AI 助手：</strong>不僅記住用戶偏好，還抽象為行為模式（例如「用戶在壓力大時偏好簡潔回答」），主動調整互動風格。</li>
+<li><strong>程式開發代理：</strong>從修復的 bug 中抽象出編碼原則（「永遠在 async 函數中檢查 event loop 狀態」），在新專案中主動預防類似問題。</li>
+<li><strong>遊戲 AI：</strong>從多局對戰中抽象出戰略層級知識（「控制中央區域 → 側翼推進」），而非僅記憶特定棋步。</li>
+<li><strong>企業客服代理：</strong>從大量客戶互動中抽象出問題解決模式，面對新問題時自動調用相似結構的解決方案。</li>
+</ol>
+
+<div class="callout">
+<strong>💡 實務洞見：</strong>當前主流的代理框架（LangChain、CrewAI、AutoGPT）大多仍停留在 Storage 階段或 Storage→Reflection 的過渡期。要讓代理在長期部署中持續進化，關鍵投資方向是 <strong>Experience 層</strong>——建立能將原始互動自動轉化為可泛化知識的記憶架構。這將是下一代 AI 代理的核心競爭壁壘。
+</div>
+
+<footer>
+<p>📄 論文來源：Luo et al. (2026) <em>From Storage to Experience: A Survey on the Evolution of LLM Agent Memory Mechanisms</em>, arXiv:2605.06716.</p>
+<p>© 2026 DKY 學習中心</p>
+</footer>
+</body>
+</html>
