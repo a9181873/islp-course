@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.6 Lab：線性迴歸實作 — ISLP 統計學習課程</title>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<style>:root{--bg:#0d1117;--fg:#c9d1d9;--card:#161b22;--border:#30363d;--accent:#58a6ff;--accent2:#3fb950;--warn:#d2991d;--code-bg:#1a1e24;--tag-bg:#1f2a37}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans TC',sans-serif;line-height:1.7;max-width:960px;margin:0 auto;padding:2rem 1.5rem}header{text-align:center;padding:2rem 0 1.5rem;border-bottom:2px solid var(--border);margin-bottom:2rem}header h1{font-size:2rem;color:var(--accent);margin-bottom:.5rem}header .meta{font-size:.9rem;color:#8b949e}.meta span{margin:0 .5rem}.difficulty{color:var(--warn);font-weight:700}.tags{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.8rem}.tag{background:var(--tag-bg);color:var(--accent);padding:.15rem .6rem;border-radius:.8rem;font-size:.72rem;border:1px solid var(--border)}h2{font-size:1.3rem;color:var(--accent);margin:2rem 0 .8rem;border-left:3px solid var(--accent);padding-left:.7rem}h3{font-size:1.05rem;color:var(--accent2);margin:1.2rem 0 .5rem}pre{background:var(--code-bg);padding:1rem 1.2rem;border-radius:8px;overflow-x:auto;font-size:.82rem;line-height:1.6;margin:.8rem 0;border:1px solid var(--border)}code{font-family:'JetBrains Mono','Fira Code',monospace;font-size:.8rem}p{margin:.7rem 0}ul,ol{margin:.5rem 0 .5rem 1.5rem}li{margin:.3rem 0}.callout{background:#1a2332;border-left:4px solid var(--accent);padding:.8rem 1.2rem;margin:1rem 0;border-radius:0 6px 6px 0}.callout-warn{background:#2a1f0a;border-left:4px solid var(--warn);padding:.8rem 1.2rem;margin:1rem 0;border-radius:0 6px 6px 0}table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.85rem}th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}th{background:var(--card);color:var(--accent)}.section-nav{display:flex;justify-content:space-between;margin:1.5rem 0;font-size:.85rem}.section-nav a{color:var(--accent)}.section-nav span{color:#8b949e}footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:.78rem;color:#8b949e}@media(max-width:768px){body{padding:1rem}header h1{font-size:1.5rem}}</style>
+</head>
+<body>
+
+<header>
+  <h1>3.6 Lab：線性迴歸實作</h1>
+  <div class="meta">
+    <span>📖 ISLP §3.6</span>
+    <span>📄 pp. 123–128</span>
+    <span class="difficulty">★★☆☆☆</span>
+    <span>⏱️ 約 40 分鐘</span>
+  </div>
+  <div class="tags">
+    <span class="tag">statsmodels</span>
+    <span class="tag">scikit-learn</span>
+    <span class="tag">Python</span>
+    <span class="tag">OLS</span>
+    <span class="tag">交互項</span>
+    <span class="tag">多項式迴歸</span>
+    <span class="tag">虛擬變數</span>
+    <span class="tag">ModelSpec</span>
+  </div>
+</header>
+
+<div class="section-nav">
+  <a href="3.5_linear_regression_vs_knn.html">← 3.5 線性迴歸 vs KNN</a>
+  <a href="../index.html">📑 課程首頁</a>
+  <span>第 4 章 → 即將推出</span>
+</div>
+
+<h2>從理論到實踐</h2>
+<p>
+在本實驗中，我們將把<strong>第 3 章所學的一切</strong>應用到真實數據上。你將使用 <code>statsmodels</code> 和 <code>scikit-learn</code> 來估計線性迴歸、添加交互項、非線性變換、處理定性變數，並自行編寫模型評估函數。
+</p>
+<p>
+<strong>數據集：</strong><code>Boston</code>（波士頓房價，506 個區域 × 13 個特徵）、<code>Auto</code>（汽車油耗數據）、<code>Carseats</code>（兒童安全座椅銷售）。
+</p>
+
+<h2>1. 導入庫與數據</h2>
+<pre><code class="language-python">import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+from ISLP import load_data
+from ISLP.models import summarize, ModelSpec as MS
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+
+# 載入數據
+Boston = load_data('Boston')
+Auto   = load_data('Auto')</code></pre>
+
+<h2>2. 簡單線性迴歸</h2>
+<p>
+使用 <code>statsmodels</code> 估計 <code>medv</code>（房價中位數，單位 $1000）與 <code>lstat</code>（低收入人口比例 %）之間的關係。
+</p>
+<pre><code class="language-python"># 方法一：statsmodels 標準 OLS
+X = sm.add_constant(Boston['lstat'])  # 添加截距項
+y = Boston['medv']
+model = sm.OLS(y, X).fit()
+print(model.summary().tables[1])
+
+# 方法二：scikit-learn（更適合機器學習流程）
+X_sk = Boston[['lstat']]
+y_sk = Boston['medv']
+lr = LinearRegression().fit(X_sk, y_sk)
+print(f"β₀ = {lr.intercept_:.3f}, β₁ = {lr.coef_[0]:.3f}")</code></pre>
+
+<div class="callout">
+<strong>📊 結果解讀：</strong>β₁ ≈ −0.95，表示低收入人口比例每增加 1 個百分點，房價中位數約下降 $950。p-value ≈ 0，統計上極顯著。R² ≈ 0.54，模型解釋了約 54% 的房價變異。
+</div>
+
+<h2>3. 多元線性迴歸</h2>
+<p>加入更多預測變數，觀察 Adjusted R² 的變化。</p>
+<pre><code class="language-python"># 使用 lstat + age 兩個變數
+predictors = ['lstat', 'age']
+X_multi = sm.add_constant(Boston[predictors])
+model_multi = sm.OLS(y, X_multi).fit()
+print(model_multi.summary().tables[1])
+
+# 使用全部 13 個變數
+X_all = sm.add_constant(Boston.drop('medv', axis=1))
+model_all = sm.OLS(y, X_all).fit()
+print(f"R² = {model_all.rsquared:.4f}")          # 0.7406
+print(f"Adjusted R² = {model_all.rsquared_adj:.4f}")  # 0.7338</code></pre>
+
+<div class="callout">
+<strong>💡 關鍵概念：</strong>R² 永遠隨變數增加而增加，但 <strong>Adjusted R²</strong> 會懲罰無用變數。當比較不同大小的模型時，務必使用 Adjusted R²。
+</div>
+
+<h2>4. 交互項（Interaction Terms）</h2>
+<p>
+使用 ISLP 的 <code>ModelSpec</code> 優雅地創建交互項。語法：<code>('var1', 'var2')</code> 會自動生成 <code>var1 × var2</code>。
+</p>
+<pre><code class="language-python"># ModelSpec：宣告式建模
+design = MS(['lstat', 'age', ('lstat', 'age')]).fit(
+    Boston[['lstat', 'age']]
+)
+X_inter = design.transform(Boston[['lstat', 'age']])
+model_inter = sm.OLS(y, X_inter).fit()
+print(model_inter.summary().tables[1])
+
+# 若交互項 p-value < 0.05 → lstat 對房價的影響取決於房屋年齡</code></pre>
+
+<h2>5. 非線性變換：多項式迴歸</h2>
+<p>
+<code>MS(...).poly(degree)</code> 自動生成正交多項式項，避免手動計算 <code>x², x³</code> 帶來的共線性問題。
+</p>
+<pre><code class="language-python"># poly(2) 自動生成 lstat 和 lstat²（正交化版本）
+design_poly = MS([MS('lstat').poly(2), 'age']).fit(Boston)
+X_poly = design_poly.transform(Boston)
+model_poly = sm.OLS(y, X_poly).fit()
+print(model_poly.summary().tables[1])
+
+# 視覺化：繪製擬合曲線
+import matplotlib.pyplot as plt
+lstat_grid = np.linspace(Boston['lstat'].min(), Boston['lstat'].max(), 100)
+X_pred = pd.DataFrame({'lstat': lstat_grid, 'age': Boston['age'].mean()})
+X_pred_design = design_poly.transform(X_pred)
+y_pred = model_poly.predict(X_pred_design)
+
+plt.scatter(Boston['lstat'], y, alpha=0.4, s=10)
+plt.plot(lstat_grid, y_pred, 'r-', linewidth=2)
+plt.xlabel('lstat'); plt.ylabel('medv')
+plt.title('多項式迴歸擬合（degree=2）')</code></pre>
+
+<h2>6. 定性預測變數（虛擬變數）</h2>
+<p>
+<code>ModelSpec</code> 檢測到字串欄位時，自動創建虛擬變數（dummy variables），以第一個類別作為 baseline。
+</p>
+<pre><code class="language-python">Carseats = load_data('Carseats')
+
+# ShelveLoc: Bad / Medium / Good — 自動轉虛擬變數
+design_cat = MS(['Price', 'Income', 'ShelveLoc']).fit(Carseats)
+X_cat = design_cat.transform(Carseats)
+y_cat = Carseats['Sales']
+model_cat = sm.OLS(y_cat, X_cat).fit()
+print(model_cat.summary().tables[1])
+
+# 輸出範例：
+# ShelveLoc[Medium]  →  β ≈ 2.0  (相對於 Bad，銷量高 2000 單位)
+# ShelveLoc[Good]    →  β ≈ 4.2  (相對於 Bad，銷量高 4200 單位)</code></pre>
+
+<div class="callout">
+<strong>📌 解讀：</strong>貨架位置從 Bad → Good，在控制價格和收入後，銷量增加約 4,200 單位。這是因果推斷中控制混雜因素的經典應用。
+</div>
+
+<h2>7. 自訂評估函數：訓練/測試分割</h2>
+<p>
+statsmodels 不會自動做 train/test split——這是機器學習工作流的核心步驟。我們自己寫。
+</p>
+<pre><code class="language-python">def eval_mse(model, X_test, y_test):
+    """計算測試集 MSE（適用於任何有 .predict() 的模型）"""
+    y_pred = model.predict(X_test)
+    return np.mean((y_test - y_pred) ** 2)
+
+# 分割數據
+X = Boston.drop('medv', axis=1)
+y = Boston['medv']
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+# 訓練 + 評估
+model = LinearRegression().fit(X_train, y_train)
+train_mse = eval_mse(model, X_train, y_train)
+test_mse  = eval_mse(model, X_test, y_test)
+print(f"Train MSE: {train_mse:.2f}, Test MSE: {test_mse:.2f}")</code></pre>
+
+<div class="callout-warn">
+<strong>⚠️ 常見錯誤：</strong>只用訓練集 MSE 判斷模型好壞，這是錯誤的！訓練 MSE 永遠偏低（甚至趨近 0），必須用測試集 MSE 或交叉驗證來估計真實泛化能力。
+</div>
+
+<h2>8. 技術總結</h2>
+
+<table>
+<tr><th>技術</th><th>工具</th><th>何時使用</th></tr>
+<tr><td>簡單線性迴歸</td><td><code>sm.OLS</code> / <code>LinearRegression</code></td><td>1 個預測變數，線性關係</td></tr>
+<tr><td>多元線性迴歸</td><td><code>sm.OLS</code> + 多變數</td><td>多變數，需要 p-value 與可解釋性</td></tr>
+<tr><td>交互項</td><td><code>MS(...)</code> 帶 tuple</td><td>當某變數的效應取決於另一變數</td></tr>
+<tr><td>多項式迴歸</td><td><code>MS(...).poly(degree)</code></td><td>輕微非線性關係</td></tr>
+<tr><td>虛擬變數</td><td><code>MS(...)</code> 自動處理</td><td>類別變數（性別、地區、等級）</td></tr>
+<tr><td>模型評估</td><td><code>train_test_split</code> + MSE</td><td>永遠需要！</td></tr>
+</table>
+
+<div class="callout">
+<strong>🎉 恭喜！你已完成了第 3 章的全部內容。</strong><br><br>
+你現在擁有：<br>
+• 用 <code>statsmodels</code> 做完整的統計推斷（p-value、信賴區間、R²）<br>
+• 用 <code>scikit-learn</code> 做機器學習工作流（train/test split、預測）<br>
+• 用 <code>ModelSpec</code> 宣告式地建立複雜模型公式<br>
+• 理解何時該用線性迴歸，何時該用 KNN<br><br>
+<strong>下一站：第 4 章 — 分類問題</strong>（邏輯迴歸、LDA、QDA、KNN 分類器）
+</div>
+
+<div class="section-nav">
+  <a href="3.5_linear_regression_vs_knn.html">← 3.5 線性迴歸 vs KNN</a>
+  <a href="../index.html">📑 課程首頁</a>
+  <span>第 4 章 → 即將推出</span>
+</div>
+
+<footer>
+<p>來源：James, Witten, Hastie, Tibshirani (2023) <em>An Introduction to Statistical Learning with Applications in Python</em>, §3.6, pp. 123–128. Springer.</p>
+<p>© 2026 DKY 學習中心 · 永久免費 · <a href="https://www.statlearning.com/">statlearning.com</a></p>
+</footer>
+
+<script src="../sidebar.js"></script>
+</body>
+</html>

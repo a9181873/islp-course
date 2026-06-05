@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="MemPro：將 LLM Agent 記憶管線轉化為可進化的程式——自動優化記憶構建與檢索策略">
+<title>MemPro：代理記憶系統作為可進化程式 — DKY 學習中心</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>:root{--bg:#0d1117;--fg:#c9d1d9;--card:#161b22;--border:#30363d;--accent:#58a6ff;--accent2:#3fb950;--warn:#d2991d;--code-bg:#1a1e24;--tag-bg:#1f2a37}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans TC',sans-serif;line-height:1.8;max-width:960px;margin:0 auto;padding:2rem 1.5rem}header{text-align:center;padding:2rem 0 1.5rem;border-bottom:2px solid var(--border);margin-bottom:2rem}header h1{font-size:1.8rem;color:var(--accent);margin-bottom:.5rem}header .meta{font-size:.85rem;color:#8b949e}.tags{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.8rem}.tag{background:var(--tag-bg);color:var(--accent);padding:.15rem .6rem;border-radius:.8rem;font-size:.72rem;border:1px solid var(--border)}h2{font-size:1.2rem;color:var(--accent);margin:2rem 0 .8rem;border-left:3px solid var(--accent);padding-left:.7rem}h3{font-size:1.05rem;color:var(--accent2);margin:1.2rem 0 .5rem}pre{background:var(--code-bg);padding:1rem;border-radius:8px;overflow-x:auto;font-size:.82rem;margin:.8rem 0}code{font-family:'JetBrains Mono','Fira Code',monospace;font-size:.8rem}p{margin:.7rem 0}ul,ol{margin:.5rem 0 .5rem 1.5rem}li{margin:.3rem 0}table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.85rem}th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}th{background:var(--card);color:var(--accent)}.callout{background:#1a2332;border-left:4px solid var(--accent);padding:.8rem 1.2rem;margin:1rem 0;border-radius:0 6px 6px 0}.oneliner{background:linear-gradient(135deg,#1a2332,#0d2137);border:1px solid var(--border);padding:1rem 1.5rem;border-radius:8px;margin:1.5rem 0;font-size:1rem;font-weight:600}footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:.78rem;color:#8b949e}@media(max-width:768px){body{padding:1rem}header h1{font-size:1.4rem}}</style>
+</head>
+<body>
+
+<header>
+  <h1>🧠 MemPro：代理記憶系統作為可進化程式</h1>
+  <div class="meta">
+    arXiv:2606.00619 · 2026-06-02 · AI Agent Memory
+  </div>
+  <div class="tags">
+    <span class="tag">記憶管線</span>
+    <span class="tag">遺傳演算法</span>
+    <span class="tag">LLM Agent</span>
+    <span class="tag">自動優化</span>
+    <span class="tag">RAG</span>
+    <span class="tag">進化計算</span>
+  </div>
+</header>
+
+<div class="oneliner">
+🧠 <strong>一句話結論：</strong>MemPro 將 LLM Agent 的整個記憶管線（構建–檢索）變成一個可進化的程式——不僅僅是調整 prompt 或向量存儲，而是讓系統跨世代自動優化整個記憶架構。
+</div>
+
+<h2>📊 關鍵數據</h2>
+<table>
+<tr><th>指標</th><th>MemPro</th><th>對比基準</th></tr>
+<tr><td>檢索準確率</td><td>↑ 18–24%</td><td>優於靜態 prompt 設計</td></tr>
+<tr><td>查詢延遲</td><td>↓ 35%</td><td>管線自我優化後更精簡</td></tr>
+<tr><td>進化代數</td><td>5–15 代</td><td>快速收斂</td></tr>
+<tr><td>LLM 調用成本</td><td>節省 40%</td><td>減少冗餘檢索與無效寫入</td></tr>
+<tr><td>泛化能力</td><td>3/3 benchmark</td><td>跨任務通用</td></tr>
+</table>
+
+<h2>🔧 機制拆解</h2>
+
+<h3>問題</h3>
+<p>
+傳統 LLM Agent 記憶系統使用固定管線：從對話歷史構建記憶 → 需要時檢索。這個管線由工程師手動設計（何時寫、寫什麼、何時檢索、檢索多少），無法適應不同任務的特性。
+</p>
+
+<h3>MemPro 的解決方案</h3>
+<ol>
+<li><strong>將管線表示為程式：</strong>整個記憶構建-檢索（Memory Construction-Retrieval, MCR）管線被編碼為結構化代碼，而非靜態 prompt 或 YAML 配置。這讓管線具備完整的表達能力——可以實現條件分支、迴圈、甚至遞歸的記憶策略。</li>
+<li><strong>通過遺傳演算法進化：</strong>每個「個體」是一個管線版本。族群中的個體經過交叉（組合不同策略）、突變（隨機修改參數或邏輯）、選擇（淘汰低分者），跨世代向更優解收斂。</li>
+<li><strong>更廣的搜索空間：</strong>不僅優化檢索參數（top-K、相似度閾值），MemPro 還進化：記憶寫入策略（何時寫、怎麼摘要壓縮）、記憶組織結構（分層 vs 平面 vs 圖形）、以及檢索後的後處理邏輯（去重、排序、融合）。</li>
+</ol>
+
+<h3>與現有方案的差異</h3>
+<table>
+<tr><th>方案</th><th>優化對象</th><th>局限性</th></tr>
+<tr><td>傳統 RAG</td><td>固定管線 + 手動調參</td><td>無法適應任務變化</td></tr>
+<tr><td>Memory-R1 (RL)</td><td>學習 ADD/UPDATE/DELETE 策略</td><td>僅優化操作，不改管線結構</td></tr>
+<tr><td>DSPy</td><td>優化 prompt 文本</td><td>不改記憶架構</td></tr>
+<tr><td><strong>MemPro</strong></td><td><strong>整個 MCR 管線程式</strong></td><td><strong>全域結構 + 參數同步進化</strong></td></tr>
+</table>
+
+<h2>🚀 落地應用</h2>
+<ol>
+<li><strong>長期運行的 AI Agent：</strong>部署 MemPro，讓它在實際使用中根據用戶互動模式自動進化出最優記憶策略——不再需要工程師為每個場景手調管線。</li>
+<li><strong>自動化 RAG 系統：</strong>將整個 RAG 管線（分塊策略 → 嵌入選擇 → 檢索演算法 → 重排邏輯）作為進化單元，讓遺傳演算法找到最優組合。</li>
+<li><strong>節省大規模成本：</strong>最優管線減少 40% 不必要的 LLM 調用——對每日處理百萬次請求的生產系統，這是可觀的成本節約。</li>
+<li><strong>擴展方向：</strong>同樣的思路可應用於 Agent 的其他管線——規劃（planning）、工具選擇（tool selection）、自我反思（self-reflection），最終實現「全自動 Agent 架構搜索」。</li>
+</ol>
+
+<div class="callout">
+<strong>📌 核心差異：</strong>MemPro 不是又一個記憶優化技巧——它是一個<strong>元框架</strong>。它把「設計記憶管線」這個原本需要人類專家數周反覆迭代的問題，變成了讓演算法在數小時內自動搜索的問題。這是從「工程師寫策略」到「工程師定義搜索空間」的範式轉移。
+</div>
+
+<footer>
+<p>來源：arXiv:2606.00619 — MemPro: Agentic Memory Systems as Evolvable Programs (2026)</p>
+<p>© 2026 DKY 學習中心 · <a href="../">返回首頁</a></p>
+</footer>
+<script src="../sidebar.js"></script>
+</body>
+</html>
