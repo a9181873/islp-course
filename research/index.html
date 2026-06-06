@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>論文筆記 — DKY 學習中心</title>
+<title>學習資源 — 學習中心</title>
 <style>
 :root {
   --bg: #0d1117; --card: #161b22; --border: #30363d;
@@ -38,8 +37,37 @@ h2 { font-size: 1.1em; color: var(--accent); margin: 28px 0 10px; border-bottom:
 </head>
 <body>
 
-<h1>📄 論文筆記</h1>
-<div class="meta">研究論文摘要、關鍵數據、落地應用建議</div>
+<h1>📖 學習資源</h1>
+<div class="meta">技術導讀、工具評測、論文筆記——自由探索</div>
+
+<h2>🏢 產業分析</h2>
+
+<div class="paper-card">
+  <h3><a href="2026-06-04-codex-white-collar-sites-plugins.html">OpenAI Codex 白領大擴張：Sites × Plugins × Annotations 全解析</a></h3>
+  <div class="authors">Hermes Lab 分析 · 2026-06-04</div>
+  <div class="oneliner">62 應用、110 技能、6 角色 plugin、一鍵生成互動網站——Codex 從寫 code 工具轉型為白領工作指揮中心</div>
+  <div style="margin-top:6px;">
+    <span class="tag">OpenAI</span><span class="tag">Codex</span><span class="tag">AI Agent</span><span class="tag">SaaS</span><span class="tag">orchestration</span>
+  </div>
+</div>
+
+<div class="paper-card">
+  <h3><a href="2026-06-04-tech-research-voice-agent-wordpress-ai-line.html">技術研究彙整：Voice Agent · WordPress · AI 原生公司 · LINE 工具</a></h3>
+  <div class="authors">Hermes Lab 研究 · 2026-06-04</div>
+  <div class="oneliner">七個技術方向一次整理：語音下單平台比較、Headless WordPress + Astro、AI 原生開發模式、LINE Bot + LLM 整合、Jetpack AI 工作流</div>
+  <div style="margin-top:6px;">
+    <span class="tag">Voice Agent</span><span class="tag">WordPress</span><span class="tag">AI-Native</span><span class="tag">LINE</span><span class="tag">Headless</span><span class="tag">LLM</span><span class="tag">Astro</span>
+  </div>
+</div>
+
+<div class="paper-card">
+  <h3><a href="2026-06-04-ai-agent-era-2026.html">2026，AI 終於開始「幫你做事」了 — 個人 AI 代理爆發的深層觀察</a></h3>
+  <div class="authors">Hermes Lab 深度研究 · 2026-06-04</div>
+  <div class="oneliner">Scout vs Spark vs OpenClaw vs Odysseus vs nanobot vs Hermes — Always-On agent 元年，六大方案深度比較</div>
+  <div style="margin-top:6px;">
+    <span class="tag">AI Agent</span><span class="tag">Scout</span><span class="tag">Spark</span><span class="tag">OpenClaw</span><span class="tag">Odysseus</span><span class="tag">Always-On</span><span class="tag">MCP</span>
+  </div>
+</div>
 
 
 <h2>🛠 工具評測</h2>
@@ -67,6 +95,24 @@ h2 { font-size: 1.1em; color: var(--accent); margin: 28px 0 10px; border-bottom:
 <h2>🧠 模型架構 / 記憶機制</h2>
 
 <div class="paper-card">
+  <h3><a href="2605.30711-sage-novelty-gate-memory-write-control.html">SAGE：用新穎性閘門省下 18% LLM 呼叫的記憶寫入控制</a></h3>
+  <div class="authors">Wang, Brahma, Henao · Duke University · 2026-05-29 · arXiv:2605.30711</div>
+  <div class="oneliner">von Mises-Fisher 新穎性偵測 + 自適應閘門，即插即用 A-Mem 省 16-18% LLM 呼叫品質不降。</div>
+  <div style="margin-top:6px;">
+    <span class="tag">新穎性偵測</span><span class="tag">寫入控制</span><span class="tag">vMF</span><span class="tag">SAGE</span>
+  </div>
+</div>
+
+<div class="paper-card">
+  <h3><a href="2605.28773-fluxmem-evolving-connectivity.html">FluxMem：記憶是持續演化的異質圖拓撲</a></h3>
+  <div class="authors">Fang, Xu, Wang et al. · 浙江大學/阿里巴巴 · 2026-05-27 · arXiv:2605.28773</div>
+  <div class="oneliner">記憶不該是靜態倉庫——三階段異質圖演化讓 LoCoMo 達 95.06，三基準全 SOTA。</div>
+  <div style="margin-top:6px;">
+    <span class="tag">異質圖</span><span class="tag">記憶演化</span><span class="tag">程序性記憶</span><span class="tag">FluxMem</span>
+  </div>
+</div>
+
+<div class="paper-card">
   <h3><a href="2605.26099-llm-sleep.html">語言模型需要睡覺嗎？離線循環增強線上推理</a></h3>
   <div class="authors">Lee et al. · CMU/Maryland · 2026-05-25 · arXiv:2605.26099</div>
   <div class="oneliner">記憶不是瓶頸，算力才是。讓模型在清空 KV cache 前多跑幾圈，把上下文真正「消化」。</div>
@@ -80,5 +126,6 @@ h2 { font-size: 1.1em; color: var(--accent); margin: 28px 0 10px; border-bottom:
 </p>
 
 <script src="../sidebar.js"></script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>
 </html>
