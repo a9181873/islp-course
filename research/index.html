@@ -73,6 +73,15 @@ h2 { font-size: 1.1em; color: var(--accent); margin: 28px 0 10px; border-bottom:
 <h2>🛠 工具評測</h2>
 
 <div class="paper-card">
+  <h3><a href="pi-agent-toolkit-analysis.html">pi (earendil-works/pi)：極簡可擴展 AI Coding Agent 深度分析</a></h3>
+  <div class="authors">earendil-works · GitHub 60.9K Stars · MIT · v0.79.0 · 2026-06-08</div>
+  <div class="oneliner">TypeScript 原生 AI agent 工具包：coding agent CLI + 統一 LLM API + TUI。極簡核心、全系統權限 extension、session 分支、供應鏈安全實踐</div>
+  <div style="margin-top:6px;">
+    <span class="tag">coding-agent</span><span class="tag">TypeScript</span><span class="tag">CLI</span><span class="tag">toolkit</span><span class="tag">extension</span>
+  </div>
+</div>
+
+<div class="paper-card">
   <h3><a href="prompt-engineering-guide.html">Prompt-Engineering-Guide：提示工程領域最完整的開源知識庫</a></h3>
   <div class="authors">DAIR.AI · GitHub 97K+ Stars · 持續更新</div>
   <div class="oneliner">不是一個工具，而是一張地圖——涵蓋 11 種提示技術、80+ 工具推薦、數十篇論文索引。</div>
@@ -95,6 +104,15 @@ h2 { font-size: 1.1em; color: var(--accent); margin: 28px 0 10px; border-bottom:
 <h2>🔬 多智能體 / 推理增強</h2>
 
 <div class="paper-card">
+  <h3><a href="2026-06-14-multi-agent-reliability.html">多 Agent 系統故障復原：失敗模式、可靠性陷阱與生產級復原策略</a></h3>
+  <div class="authors">Hermes Lab 研究彙整 · 2026-06-14</div>
+  <div class="oneliner">單步 95% → 10 步後 59.9%。五種真實失敗模式、三層復原架構、GitHub/DeepMind/Zylos 生產級實踐一次整理</div>
+  <div style="margin-top:6px;">
+    <span class="tag">multi-agent</span><span class="tag">reliability</span><span class="tag">fault-tolerance</span><span class="tag">checkpoint</span><span class="tag">circuit-breaker</span>
+  </div>
+</div>
+
+<div class="paper-card">
   <h3><a href="2605.14163-agentic-boosting-weak-reasoning.html">用多智能體系統增強弱推理模型</a></h3>
   <div class="authors">Sunkaraneni et al. · MIT/Tel Aviv · 2026-05-13 · arXiv:2605.14163</div>
   <div class="oneliner">弱模型委員會 ×8 + 驗證器 ≈ 強模型單獨。瓶頸是 coverage 而非 selector。</div>
@@ -104,6 +122,60 @@ h2 { font-size: 1.1em; color: var(--accent); margin: 28px 0 10px; border-bottom:
 </div>
 
 <h2>🧠 模型架構 / 記憶機制</h2>
+
+<div class="paper-card">
+  <h3><a href="2026-06-21-evoarena-memory-evolution.html">EvoArena：追蹤記憶演化的動態環境基準 — 現有 Agent 僅 39.6%</a></h3>
+  <div class="authors">Jundong Xu, Qingchuan Li et al. · 2026-06-11 (v2: 06-17) · arXiv:2606.13681 · CC BY 4.0</div>
+  <div class="oneliner">首個動態環境 Agent 基準：環境持續演化，現有 Agent 平均準確率僅 39.6%。EvoMem patch-based 記憶讓 GAIA +6.1%、LoCoMo +4.8%</div>
+  <div style="margin-top:6px;">
+    <span class="tag">EvoArena</span><span class="tag">dynamic-environments</span><span class="tag">memory-evolution</span><span class="tag">GAIA</span><span class="tag">EvoMem</span>
+  </div>
+</div>
+
+<div class="paper-card">
+  <h3><a href="2026-06-17-dcpm-dual-process-memory.html">DCPM：雙歷程認知記憶系統 — 給 AI Agent 的「晝夜雙腦」</a></h3>
+  <div class="authors">Tianxiang Fei, Mingyang Song, Mao Zheng, Xiang Yu · 2026-06-08 · arXiv:2606.09483</div>
+  <div class="oneliner">4 層認知階層記憶 + System1 晝間寫入 + System2 夜間歸納，跨對話隱性推理 +5.20 分。借鏡心理學雙歷程理論重塑 Agent 記憶架構</div>
+  <div style="margin-top:6px;">
+    <span class="tag">dual-process</span><span class="tag">cognitive-memory</span><span class="tag">self-evolving</span><span class="tag">DCPM</span><span class="tag">System2</span>
+  </div>
+</div>
+
+<div class="paper-card">
+  <h3><a href="2026-06-19-tmem-parametric-memory.html">TMEM：用參數化記憶讓 AI Agent 真正從經驗中學習</a></h3>
+  <div class="authors">Tao Ren, Weiyao Luo, Hui Yang et al. · 2026-06-03 · arXiv:2606.04536</div>
+  <div class="oneliner">不再只在 prompt 裡翻舊帳——TMEM 首度讓 Agent 透過線上 LoRA 微調「內化」經驗，在單次任務中改變行為。SVD 初始化 + RL 可優化提取策略</div>
+  <div style="margin-top:6px;">
+    <span class="tag">parametric-memory</span><span class="tag">LoRA</span><span class="tag">self-evolving</span><span class="tag">TMEM</span><span class="tag">RL</span>
+  </div>
+</div>
+
+<div class="paper-card">
+  <h3><a href="2026-06-15-q-evolve.html">Q-Evolve：LLM Agent 自主演進的共演化框架 — ICML 2026</a></h3>
+  <div class="authors">Zhang, Fang, Chen, Pechenizkiy · ICML 2026 · arXiv:2606.07367</div>
+  <div class="oneliner">Critic-Policy 共演化閉環：自動標籤過程獎勵→自己學習→生成更好資料。不需人類標註，逐步自我改進長程決策。</div>
+  <div style="margin-top:6px;">
+    <span class="tag">self-evolving</span><span class="tag">ICML2026</span><span class="tag">IQL</span><span class="tag">credit-assignment</span><span class="tag">Q-Evolve</span>
+  </div>
+</div>
+
+<div class="paper-card">
+  <h3><a href="2026-06-11-tree-of-experience.html">Tree-of-Experience：低重複隱式獎勵下的 Agent 結構化經驗管理</a></h3>
+  <div class="authors">Deng, Zhu, Wang et al. · 2026-06-05 · arXiv:2606.06960</div>
+  <div class="oneliner">通用記憶機制在低重複、隱式獎勵環境下全面潰敗——甚至不如無經驗 baseline。Tree-of-Experience 用結構化經驗樹 + 非參數 RL 扭轉局面。</div>
+  <div style="margin-top:6px;">
+    <span class="tag">self-evolving</span><span class="tag">experience-tree</span><span class="tag">implicit-reward</span><span class="tag">ToE</span>
+  </div>
+</div>
+
+<div class="paper-card">
+  <h3><a href="2605.27366-muse-autoskill-self-evolving.html">MUSE-Autoskill：讓 AI 代理自己發明、記憶、改良技能</a></h3>
+  <div class="authors">Lin, Li, Song, Jiang, Zhang · 2026-05-26 · arXiv:2605.27366</div>
+  <div class="oneliner">技能的五階段生命週期（創建→記憶→管理→評估→精煉），讓代理從「工具使用者」進化為「工具創造者」</div>
+  <div style="margin-top:6px;">
+    <span class="tag">self-evolving</span><span class="tag">skill-memory</span><span class="tag">MUSE</span><span class="tag">agent-architecture</span>
+  </div>
+</div>
 
 <div class="paper-card">
   <h3><a href="2605.30711-sage-novelty-gate-memory-write-control.html">SAGE：用新穎性閘門省下 18% LLM 呼叫的記憶寫入控制</a></h3>
