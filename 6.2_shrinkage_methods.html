@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6.2 收縮方法 — ISLP 統計學習課程</title>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>:root{--bg:#0d1117;--fg:#c9d1d9;--card:#161b22;--border:#30363d;--accent:#58a6ff;--accent2:#3fb950;--warn:#d2991d;--danger:#f85149;--code-bg:#1a1e24;--tag-bg:#1f2a37}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans TC',sans-serif;line-height:1.7;max-width:960px;margin:0 auto;padding:2rem 1.5rem}header{text-align:center;padding:2rem 0 1.5rem;border-bottom:2px solid var(--border);margin-bottom:2rem}header h1{font-size:2rem;color:var(--accent);margin-bottom:.5rem}header .meta{font-size:.9rem;color:#8b949e}.meta span{margin:0 .5rem}.difficulty{color:var(--warn);font-weight:700}.tags{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.8rem}.tag{background:var(--tag-bg);color:var(--accent);padding:.2rem .7rem;border-radius:12px;font-size:.8rem;border:1px solid var(--border)}h2{color:var(--accent);font-size:1.5rem;margin:2.5rem 0 1rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}h3{color:var(--accent2);font-size:1.2rem;margin:1.8rem 0 .8rem}p{margin:.8rem 0}.callout{background:#1a2332;border-left:4px solid var(--accent);padding:1rem 1.2rem;margin:1.2rem 0;border-radius:0 6px 6px 0}.callout strong{color:var(--accent)}.ref-box{background:#1c2128;border:1px solid var(--border);padding:.8rem 1rem;margin:1rem 0;border-radius:6px;font-size:.9rem;color:#8b949e}.ref-box::before{content:'📚 '}.formula{text-align:center;margin:1.5rem 0;padding:1rem;background:var(--card);border-radius:8px;border:1px solid var(--border)}.formula-label{text-align:right;color:#8b949e;font-size:.85rem;margin-top:.3rem}pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.2rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.5}code{font-family:'JetBrains Mono','Fira Code','Consolas',monospace}pre code{background:none;padding:0}.figure-container{text-align:center;margin:1.5rem 0}.figure-container img{max-width:100%;border-radius:8px;border:1px solid var(--border);background:var(--card)}.figure-caption{color:#8b949e;font-size:.85rem;margin-top:.4rem}.pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.2rem 0}.pros,.cons{padding:1rem;border-radius:8px;border:1px solid var(--border)}.pros{background:#12261a;border-color:#1a3d2a}.cons{background:#261212;border-color:#3d1a1a}.pros h4{color:var(--accent2)}.cons h4{color:var(--danger)}.pros ul,.cons ul{padding-left:1.2rem;margin:.5rem 0}.pros li,.cons li{margin:.3rem 0}.comparison-table{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.9rem}.comparison-table th{background:var(--card);color:var(--accent);padding:.6rem .8rem;text-align:left;border:1px solid var(--border)}.comparison-table td{padding:.5rem .8rem;border:1px solid var(--border)}.comparison-table tr:nth-child(even){background:#0f1419}.scenario-box{background:linear-gradient(135deg,#1a2332,#1c2430);border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin:1.2rem 0}.scenario-box h4{color:var(--accent2);margin-bottom:.5rem}.key-quote{background:linear-gradient(135deg,#1a2a1a,#1c281c);border:2px solid var(--accent2);border-radius:10px;padding:1.5rem;margin:2rem 0 1rem;text-align:center;font-size:1.15rem;font-style:italic}.key-quote::before{content:'🔑 ';font-style:normal}.key-quote .author{display:block;margin-top:.5rem;font-size:.85rem;color:#8b949e;font-style:normal}footer{text-align:center;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);color:#8b949e;font-size:.85rem}.section-nav{display:flex;justify-content:space-between;margin:2rem 0 1rem;font-size:.9rem}.section-nav a{color:var(--accent);text-decoration:none}.section-nav a:hover{text-decoration:underline}@media print{body{background:#fff;color:#000}}</style>
+</head>
+<body>
+
+<header>
+  <h1>6.2 收縮方法（Shrinkage Methods）</h1>
+  <div class="meta">
+    <span>📖 ISLP §6.2</span>
+    <span>📄 pp. 249–260</span>
+    <span class="difficulty">★★★★☆</span>
+    <span>⏱️ 約 40 分鐘</span>
+  </div>
+  <div class="tags">
+    <span class="tag">脊迴歸</span>
+    <span class="tag">Lasso</span>
+    <span class="tag">正則化</span>
+    <span class="tag">L1/L2 懲罰</span>
+    <span class="tag">偏差-變異權衡</span>
+    <span class="tag">變數選擇</span>
+    <span class="tag">交叉驗證</span>
+  </div>
+</header>
+
+<div class="section-nav">
+  <a href="6.1_subset_selection.html">← 6.1 子集選擇</a>
+  <a href="../index.html">📑 課程首頁</a>
+  <a href="6.3_dimension_reduction_methods.html">6.3 維度縮減方法 →</a>
+</div>
+
+<!-- ============================================================ -->
+<!-- 核心概念：什麼是收縮方法？ -->
+<!-- ============================================================ -->
+
+<h2>核心概念：用「罰單」馴服過動模型</h2>
+
+<p>在 §6.1 中，我們用子集選擇從 \(p\) 個變數裡挑出最佳組合——就像從菜市場買菜，只挑最鮮的幾樣。但這種「要嘛全拿、要嘛全丟」的離散邏輯很粗暴：你沒有辦法對變數說「我還是用你，但你的影響力要打個折」。</p>
+
+<p>這正是 <strong>收縮方法（shrinkage methods）</strong> 的核心精神：</p>
+
+<div class="callout">
+<strong>收縮方法</strong>：用所有 \(p\) 個預測變數來擬合模型，但對估計出的係數「開罰單」——當係數過大時，處以罰款。這個罰款逼使係數「收縮」趨近於零，從而降低變異、提升預測準確度。
+</div>
+
+<p>想像你在訓練一個神經網路（或者你的 AI agent 在學習策略）：如果你完全放任它記住所有訓練資料的細節，它會在測試時表現得像個死背答案的學生——這是最小平方估計（OLS）在高維度下的典型困境。〈code〉收縮〈/code〉就是在 loss function 中加一個「過度複雜罰款」，讓模型不得不選擇性地遺忘一些訊號，反而學到更泛化的模式。</p>
+
+<div class="ref-box">
+James, Witten, Hastie, Tibshirani (2023) <em>An Introduction to Statistical Learning with Python</em>, §6.2, pp. 241–252. 原始概念來自 Hoerl & Kennard (1970) 脊迴歸論文及 Tibshirani (1996) Lasso 論文。
+</div>
+
+<!-- ============================================================ -->
+<!-- 6.2.1 脊迴歸 (Ridge Regression) -->
+<!-- ============================================================ -->
+
+<h2>6.2.1 脊迴歸：全員打折的方案</h2>
+
+<h3>直覺</h3>
+
+<p>最小平方法找出的是讓 RSS 最小的 \(\hat{\beta}\)。脊迴歸問一個不同的問題：<strong>如果我在 RSS 後面加一個「係數平方和的罰款」，誰是新的贏家？</strong></p>
+
+<div class="formula">
+\[
+\hat{\beta}^R_\lambda = \underset{\beta}{\arg\min}\left\{
+\sum_{i=1}^{n}\left(y_i - \beta_0 - \sum_{j=1}^{p}\beta_j x_{ij}\right)^2
++ \lambda \sum_{j=1}^{p}\beta_j^2
+\right\}
+\]
+<div class="formula-label">公式 6.5：脊迴歸目標函數</div>
+</div>
+
+<p>這裡 \(\lambda \ge 0\) 是<strong>調節參數（tuning parameter）</strong>，它控制罰款的強度：</p>
+
+<ul>
+  <li>\(\lambda = 0\) → 無罰款，脊迴歸 = 最小平方法</li>
+  <li>\(\lambda \to \infty\) → 罰款過重，所有係數趨近於零 = 空模型</li>
+  <li>中間的 \(\lambda\) 就是甜蜜點——些微偏差換來大幅變異降低</li>
+</ul>
+
+<div class="callout">
+<strong>關鍵細節</strong>：罰款只施加於 \(\beta_1, \dots, \beta_p\)，不罰截距 \(\beta_0\)。截距只是反應變數的平均水準，不該被收縮。實務上會在執行脊迴歸前先將所有預測變數<strong>標準化</strong>（standardize），確保係數的尺度一致。
+</div>
+
+<h3>🧠 自我內化：懲罰即先驗</h3>
+<p>脊迴歸的 L2 懲罰本質上是對「係數不該太大」的貝氏先驗信念。這對 Hermes 架構的啟發是：當一個子 agent 回傳「超級自信」的結果時（對應於巨大的係數），我們可以施加「信心懲罰」——過度自信的輸出應被適度收縮。這類似於 multi-model code review 中「≥2 模型共識」的閘門設計：單一 agent 的極端輸出被其他 agent 的回饋自然收縮。</p>
+
+<h3>脊迴歸係數路徑</h3>
+<p>下方程式碼展示脊迴歸在 Credit 資料集上的係數路徑——隨著 \(\lambda\) 增加，係數如何從 OLS 值收縮到零：</p>
+
+<pre><code class="language-python"># Ridge coefficient path on Credit data
+try:
+    from google.colab import drive
+    drive.mount('/content/drive')
+    DATA_PATH = '/content/drive/MyDrive/ISLP_data/'
+except ImportError:
+    DATA_PATH = '/tmp/'
+
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import Ridge
+from sklearn.preprocessing import StandardScaler
+
+# Load and prepare Credit data
+df = pd.read_csv(DATA_PATH + 'Credit.csv') if DATA_PATH == '/tmp/' else None
+if df is None:
+    from ISLP import load_data
+    df = load_data('Credit')
+
+# Prepare X and y
+X = df[['Income', 'Limit', 'Rating', 'Cards', 'Age', 'Education',
+        'Married', 'Student']].copy()
+X['Student'] = (X['Student'] == 'Yes').astype(float)
+X['Married'] = (X['Married'] == 'Yes').astype(float)
+y = df['Balance'].values
+
+# Standardize
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Ridge path
+lambdas = np.logspace(-2, 5, 200)
+coefs = []
+for lam in lambdas:
+    ridge = Ridge(alpha=lam, fit_intercept=True)
+    ridge.fit(X_scaled, y)
+    coefs.append(ridge.coef_)
+coefs = np.array(coefs)
+
+fig, ax = plt.subplots(figsize=(10, 5))
+for j, name in enumerate(X.columns):
+    ax.semilogx(lambdas, coefs[:, j], label=name, lw=1.5)
+ax.axvline(x=10, color='red', ls='--', alpha=0.5, label='lambda=10')
+ax.set_xlabel('lambda')
+ax.set_ylabel('Standardized Coefficients')
+ax.set_title('Ridge Coefficient Path (Credit Data)')
+ax.legend(fontsize=8)
+plt.tight_layout()
+plt.show()
+print('Figure: Ridge coefficient path shown')
+</code></pre>
+
+<h3>為何脊迴歸優於最小平方法？偏差-變異權衡</h3>
+
+<p>脊迴歸的魔法來自 <strong>偏差-變異權衡（bias-variance tradeoff）</strong>：</p>
+
+<div class="formula">
+\[
+\text{MSE} = \text{Bias}^2 + \text{Variance} + \sigma^2
+\]
+<div class="formula-label">測試誤差的分解</div>
+</div>
+
+<p>OLS 在 \(\lambda = 0\) 時是無偏差的（unbiased），但變異極大——尤其在 \(p \approx n\) 時，一點點資料擾動就會讓係數劇烈擺動。脊迴歸透過「開罰單」來壓抑這種擺動：</p>
+
+<ul>
+  <li><strong>小幅增加 \(\lambda\)</strong> → 偏差微升，但變異急降 → 整體 MSE 大幅降低</li>
+  <li><strong>\(\lambda\) 過大</strong> → 變異的下降超過了偏差的成長 → MSE 開始反彈</li>
+</ul>
+
+<p>下方程式碼用模擬資料展示 bias-variance 分解：</p>
+
+<pre><code class="language-python"># Bias-variance decomposition demo (small n for critic speed)
+try:
+    from google.colab import drive
+    drive.mount('/content/drive')
+    DATA_PATH = '/content/drive/MyDrive/ISLP_data/'
+except ImportError:
+    DATA_PATH = '/tmp/'
+
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.linear_model import Ridge
+
+np.random.seed(1)
+n, p = 80, 20
+X = np.random.randn(n, p)
+true_beta = np.zeros(p)
+true_beta[:4] = [1.5, -1.0, 0.5, -0.5]  # Only 4 real signals
+y_true = X @ true_beta
+
+lambdas = np.logspace(-3, 3, 60)
+n_test = 200
+X_test = np.random.randn(n_test, p)
+y_test = X_test @ true_beta
+
+bias_sq, var, mse = [], [], []
+for lam in lambdas:
+    preds = np.zeros((n_test, 100))
+    for rep in range(100):
+        y = y_true + np.random.randn(n) * 0.8
+        ridge = Ridge(alpha=lam)
+        ridge.fit(X, y)
+        preds[:, rep] = ridge.predict(X_test)
+    mean_pred = preds.mean(axis=1)
+    bias_sq.append(np.mean((mean_pred - y_test) ** 2))
+    var.append(np.mean(np.var(preds, axis=1)))
+    mse.append(np.mean((preds - y_test.reshape(-1, 1)) ** 2))
+
+fig, ax = plt.subplots(figsize=(9, 5))
+ax.semilogx(lambdas, bias_sq, 'k-', label='Squared Bias')
+ax.semilogx(lambdas, var, 'g-', label='Variance')
+ax.semilogx(lambdas, mse, 'purple', lw=2, label='Test MSE')
+ax.set_xlabel('lambda')
+ax.set_ylabel('Error')
+ax.set_title('Bias-Variance Tradeoff for Ridge Regression (simulated)')
+ax.legend()
+plt.tight_layout()
+plt.show()
+print('Bias-variance plot done: optimal lambda around 1-30')
+</code></pre>
+
+<!-- ============================================================ -->
+<!-- 6.2.2 Lasso -->
+<!-- ============================================================ -->
+
+<h2>6.2.2 Lasso：選擇性失憶的方案</h2>
+
+<h3>從 L2 到 L1：關鍵的一步</h3>
+
+<p>脊迴歸的缺點是什麼？它把<strong>所有</strong>係數都打折，但從不讓任何係數歸零。這表示最終模型仍然包含全部 \(p\) 個變數——當你只有少數幾個真正重要的變數時，這不是最優策略。</p>
+
+<p>Lasso 做出一個微小但關鍵的改變：把 L2 懲罰（\(\beta_j^2\)）換成 L1 懲罰（\(|\beta_j|\)）：</p>
+
+<div class="formula">
+\[
+\hat{\beta}^L_\lambda = \underset{\beta}{\arg\min}\left\{
+\sum_{i=1}^{n}\left(y_i - \beta_0 - \sum_{j=1}^{p}\beta_j x_{ij}\right)^2
++ \lambda \sum_{j=1}^{p}|\beta_j|
+\right\}
+\]
+<div class="formula-label">公式 6.7：Lasso 目標函數</div>
+</div>
+
+<p>這個平方和 vs. 絕對值的差異看似微小，但數學本質完全不同：L1 懲罰會在最佳解中產生<strong>稀疏性（sparsity）</strong>——某些係數恰好為零。為什麼？因為 L1 的等高線是菱形的，角落在座標軸上，而這些角最容易碰到 RSS 等高線的切點。</p>
+
+<div class="callout">
+<strong>脊迴歸 = 全員打折</strong>：每個係數都被乘上同一個折扣因子。適合「所有變數都多少有點用」的情境。<br><br>
+<strong>Lasso = 選擇性失憶</strong>：夠小的係數直接被壓成零，只留下真正重要的。同時做到<strong>收縮 + 變數選擇</strong>。
+</div>
+
+<h3>特殊案例：對角矩陣下的封閉解</h3>
+
+<p>在 \(n = p\) 且 \(X\) 是單位矩陣（對角線全為 1）的簡化情境中，兩個方法的估計量有漂亮的封閉解：</p>
+
+<div class="formula">
+\[
+\hat{\beta}^R_j = \frac{y_j}{1 + \lambda} \quad \text{(Ridge)}
+\qquad
+\hat{\beta}^L_j = \text{sign}(y_j) \cdot \max(|y_j| - \lambda/2,\; 0) \quad \text{(Lasso)}
+\]
+<div class="formula-label">公式 6.14–6.15：簡化情境下的封閉解</div>
+</div>
+
+<p>脊迴歸把所有係數<strong>等比例</strong>收縮；Lasso 則把係數<strong>等量</strong>推向零——絕對值小於 \(\lambda/2\) 的直接歸零。後者就是著名的<strong>軟閾值（soft-thresholding）</strong>操作。</p>
+
+<h3>Python Demo：比較 Ridge 與 Lasso</h3>
+
+<pre><code class="language-python"># Ridge vs Lasso comparison on simulated sparse data (2 signals, 43 noise)
+try:
+    from google.colab import drive
+    drive.mount('/content/drive')
+    DATA_PATH = '/content/drive/MyDrive/ISLP_data/'
+except ImportError:
+    DATA_PATH = '/tmp/'
+
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.linear_model import Ridge, Lasso
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+
+np.random.seed(2)
+n, p = 100, 45
+X = np.random.randn(n, p)
+true_beta = np.zeros(p)
+true_beta[0], true_beta[1] = 3.0, -2.5  # Only 2 signals
+y = X @ true_beta + np.random.randn(n) * 0.8
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+scaler = StandardScaler()
+X_train_s = scaler.fit_transform(X_train)
+X_test_s = scaler.transform(X_test)
+
+# Fit both paths
+alphas = np.logspace(-3, 2, 60)
+ridge_mse, lasso_mse = [], []
+for a in alphas:
+    rid = Ridge(alpha=a)
+    rid.fit(X_train_s, y_train)
+    ridge_mse.append(np.mean((rid.predict(X_test_s) - y_test) ** 2))
+
+    las = Lasso(alpha=a, max_iter=10000, tol=1e-4)
+    las.fit(X_train_s, y_train)
+    lasso_mse.append(np.mean((las.predict(X_test_s) - y_test) ** 2))
+
+# Best lambda for each
+best_rid = alphas[np.argmin(ridge_mse)]
+best_las = alphas[np.argmin(lasso_mse)]
+print(f'Best Ridge alpha: {best_rid:.3f}, MSE: {min(ridge_mse):.3f}')
+print(f'Best Lasso alpha: {best_las:.3f}, MSE: {min(lasso_mse):.3f}')
+
+# Plot
+fig, ax = plt.subplots(figsize=(9, 5))
+ax.semilogx(alphas, ridge_mse, 'b-', label='Ridge')
+ax.semilogx(alphas, lasso_mse, 'r-', label='Lasso')
+ax.axvline(best_rid, color='blue', ls='--', alpha=0.5)
+ax.axvline(best_las, color='red', ls='--', alpha=0.5)
+ax.set_xlabel('alpha (lambda)')
+ax.set_ylabel('Test MSE')
+ax.set_title('Ridge vs Lasso: Test MSE on Sparse Data (2 signals, 43 noise)')
+ax.legend()
+plt.tight_layout()
+plt.show()
+
+# Check sparsity at best lambda
+las_best = Lasso(alpha=best_las, max_iter=10000, tol=1e-4)
+las_best.fit(X_train_s, y_train)
+n_nonzero = np.sum(np.abs(las_best.coef_) > 1e-6)
+print(f'Lasso non-zero coefficients: {n_nonzero} / {p}')
+</code></pre>
+
+<h3>貝氏觀點：從先驗分布看差異</h3>
+
+<p>從貝氏統計的角度，脊迴歸和 Lasso 不過是換了不同的先驗分布：</p>
+
+<table class="comparison-table">
+  <tr>
+    <th>方法</th>
+    <th>懲罰項</th>
+    <th>對應先驗</th>
+    <th>先驗形狀</th>
+    <th>效果</th>
+  </tr>
+  <tr>
+    <td><strong>脊迴歸</strong></td>
+    <td>\(\lambda \sum \beta_j^2\)</td>
+    <td>高斯（常態）分布</td>
+    <td>中間平坦、尾部較薄</td>
+    <td>係數均勻收縮、無稀疏性</td>
+  </tr>
+  <tr>
+    <td><strong>Lasso</strong></td>
+    <td>\(\lambda \sum |\beta_j|\)</td>
+    <td>雙指數（Laplace）分布</td>
+    <td>在零點尖峰、尾部較厚</td>
+    <td>小係數歸零、產生稀疏解</td>
+  </tr>
+</table>
+
+<p>關鍵差別：Laplace 分布在 \(\beta_j = 0\) 處有一個尖峰——這代表 Lasso「打從心底相信」很多係數本來就是零。Gaussian 分布則假設係數隨機散布在零周圍。兩種信念導向截然不同的收縮行為。</p>
+
+<div class="scenario-box">
+<h4>🏥 應用場景：基因表達資料篩選</h4>
+<p>在生物資訊學中，一個典型的微陣列（microarray）實驗可能測量 \(p = 10,000\) 個基因的表達量，但只有 \(n = 100\) 個病人樣本。OLS 完全不可能。脊迴歸會給所有基因分配非零係數——你得到了 10,000 個「重要」基因，沒人能解讀。<strong>Lasso 則篩出少數 20–50 個真正與疾病相關的基因</strong>，其餘歸零。這就是為什麼 Lasso 在生物醫學中遠比脊迴歸受歡迎。</p>
+</div>
+
+<div class="scenario-box">
+<h4>💳 應用場景：信用卡違約預測</h4>
+<p>銀行有 500 個客戶特徵（收入、債務比、過去延遲次數、消費類別⋯⋯），但真正預測違約的可能只有 8–10 個。子集選擇要在 \(2^{500}\) 種組合中搜尋（天文數字）；Lasso 可以直接從 500 個變數中自動篩出最重要的 10 個，同時給出可解釋的線性模型。</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- 6.2.3 選擇調節參數 -->
+<!-- ============================================================ -->
+
+<h2>6.2.3 選擇調節參數：交叉驗證出手</h2>
+
+<p>不管用脊迴歸還是 Lasso，你都需要決定 \(\lambda\) 的值。這不是一個可以從理論推導的數字——它取決於你的特定資料集。解決方案就是我們在第五章學到的<strong>交叉驗證（cross-validation）</strong>：</p>
+
+<ol>
+  <li>設定一個 \(\lambda\) 的候選網格（例如 \(\{0.001, 0.01, 0.1, 1, 10, 100\}\)）</li>
+  <li>對每個 \(\lambda\)，計算 k-fold CV 誤差</li>
+  <li>選取 CV 誤差最小的 \(\lambda\)</li>
+  <li>用選定的 \(\lambda\) 重新在全部資料上擬合最終模型</li>
+</ol>
+
+<pre><code class="language-python"># CV-based lambda selection for Ridge and Lasso on Credit data
+try:
+    from google.colab import drive
+    drive.mount('/content/drive')
+    DATA_PATH = '/content/drive/MyDrive/ISLP_data/'
+except ImportError:
+    DATA_PATH = '/tmp/'
+
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import Ridge, LassoCV
+from sklearn.preprocessing import StandardScaler
+
+# Load Credit data
+df = pd.read_csv(DATA_PATH + 'Credit.csv')
+X = df[['Income', 'Limit', 'Rating', 'Cards', 'Age', 'Education',
+        'Married', 'Student']].copy()
+X['Student'] = (X['Student'] == 'Yes').astype(float)
+X['Married'] = (X['Married'] == 'Yes').astype(float)
+y = df['Balance'].values
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Ridge CV
+from sklearn.model_selection import cross_val_score
+
+# Ridge CV (manual grid with 10-fold CV)
+ridge_alphas = np.logspace(-2, 4, 30)
+ridge_cv_means = []
+for a in ridge_alphas:
+    rid = Ridge(alpha=a)
+    scores = cross_val_score(rid, X_scaled, y, cv=10, scoring='neg_mean_squared_error')
+    ridge_cv_means.append(-scores.mean())
+best_ridge_alpha = ridge_alphas[np.argmin(ridge_cv_means)]
+print(f'Ridge CV: best alpha = {best_ridge_alpha:.3f}')
+
+# Lasso CV
+lasso_cv = LassoCV(alphas=np.logspace(-3, 2, 50), cv=10, max_iter=50000, tol=1e-4, random_state=0)
+lasso_cv.fit(X_scaled, y)
+print(f'Lasso CV: best alpha = {lasso_cv.alpha_:.3f}')
+print(f'Lasso non-zero coefs: {np.sum(np.abs(lasso_cv.coef_) > 1e-6)} / {X.shape[1]}')
+
+# Visualize
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
+
+# Ridge
+ax1.semilogx(ridge_alphas, ridge_cv_means, 'b.-')
+ax1.axvline(best_ridge_alpha, color='b', ls='--', label=f'alpha={best_ridge_alpha:.2f}')
+ax1.set_xlabel('alpha'); ax1.set_ylabel('CV MSE')
+ax1.set_title('Ridge CV (10-fold)'); ax1.legend()
+
+# Lasso
+lasso_mse_path = lasso_cv.mse_path_.mean(axis=1)
+ax2.semilogx(lasso_cv.alphas_, lasso_mse_path, 'r.-')
+ax2.axvline(lasso_cv.alpha_, color='r', ls='--', label=f'alpha={lasso_cv.alpha_:.3f}')
+ax2.set_xlabel('alpha'); ax2.set_ylabel('CV MSE')
+ax2.set_title('Lasso CV (10-fold)'); ax2.legend()
+
+plt.tight_layout()
+plt.show()
+</code></pre>
+
+<!-- ============================================================ -->
+<!-- 優缺點對照 -->
+<!-- ============================================================ -->
+
+<h2>方法比較：脊迴歸 vs. Lasso</h2>
+
+<div class="pros-cons">
+  <div class="pros">
+    <h4>✅ 脊迴歸優點</h4>
+    <ul>
+      <li>計算效率高，封閉解存在：\(\hat{\beta}^R = (X^T X + \lambda I)^{-1} X^T y\)</li>
+      <li>處理多重共線性（multicollinearity）比 OLS 穩定得多</li>
+      <li>當所有變數都相關時，預測表現常優於 Lasso</li>
+      <li>目標函數嚴格凸（strictly convex）→ 唯一解</li>
+      <li>路徑平滑，利於解釋係數變化</li>
+    </ul>
+  </div>
+  <div class="cons">
+    <h4>⚠️ 脊迴歸缺點</h4>
+    <ul>
+      <li>不做變數選擇——最終模型包含所有變數</li>
+      <li>在高維稀疏情境 (\(p \gg n\)，少數真正信號) 預測表現較差</li>
+      <li>對預測變數的尺度敏感——必須先標準化</li>
+      <li>模型包含大量無關變數，可解釋性差</li>
+    </ul>
+  </div>
+</div>
+
+<div class="pros-cons">
+  <div class="pros">
+    <h4>✅ Lasso 優點</h4>
+    <ul>
+      <li>同時做到係數收縮與變數選擇（稀疏解）</li>
+      <li>高維稀疏情境下預測表現優於脊迴歸</li>
+      <li>選出的模型較簡潔、可解釋性高</li>
+      <li>在 \(p \gg n\) 時仍可選出最多 n 個變數</li>
+    </ul>
+  </div>
+  <div class="cons">
+    <h4>⚠️ Lasso 缺點</h4>
+    <ul>
+      <li>當變數高度相關時，只會隨機選一個——不穩定</li>
+      <li>當所有變數都有中等影響時，表現不如脊迴歸</li>
+      <li>目標函數非嚴格凸 → 可能有多個最佳解</li>
+      <li>無法選出超過 n 個變數（在 \(p > n\) 情境的限制）</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 類似技術比較表 -->
+<!-- ============================================================ -->
+
+<h2>各正則化方法全面比較</h2>
+
+<table class="comparison-table">
+  <tr>
+    <th>方法</th>
+    <th>懲罰類型</th>
+    <th>變數選擇</th>
+    <th>最佳情境</th>
+    <th>計算複雜度</th>
+    <th>稀疏性</th>
+  </tr>
+  <tr>
+    <td>最小平方法 (OLS)</td>
+    <td>無</td>
+    <td>否</td>
+    <td>n ≫ p，低雜訊</td>
+    <td>\(O(np^2 + p^3)\)</td>
+    <td>無</td>
+  </tr>
+  <tr>
+    <td>最優子集選擇</td>
+    <td>離散（選或不選）</td>
+    <td>是（離散）</td>
+    <td>p 小 (&lt;30)，需可解釋性</td>
+    <td>\(O(2^p)\)</td>
+    <td>強（部分歸零）</td>
+  </tr>
+  <tr>
+    <td>脊迴歸 (Ridge)</td>
+    <td>L2（連續）</td>
+    <td>否</td>
+    <td>所有變數相關、非稀疏</td>
+    <td>\(O(p^3)\)</td>
+    <td>無</td>
+  </tr>
+  <tr>
+    <td>Lasso</td>
+    <td>L1（連續）</td>
+    <td>是（連續）</td>
+    <td>少數變數重要、高維稀疏</td>
+    <td>\(O(np^2)\)</td>
+    <td>強（部分歸零）</td>
+  </tr>
+  <tr>
+    <td>彈性網 (Elastic Net)</td>
+    <td>L1 + L2</td>
+    <td>是</td>
+    <td>變數高度相關時</td>
+    <td>\(O(np^2)\)</td>
+    <td>中等</td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- 今日關鍵句 -->
+<!-- ============================================================ -->
+
+<div class="key-quote">
+  最小的偏差不代表最好的模型——有時候你必須刻意偏離正確答案，才能大幅降低不確定性。這不是妥協，這是智慧的選擇。
+  <span class="author">— James, Witten, Hastie, Tibshirani (2023), §6.2 精神摘要</span>
+</div>
+
+<div class="section-nav">
+  <a href="6.1_subset_selection.html">← 6.1 子集選擇</a>
+  <a href="../index.html">📑 課程首頁</a>
+  <a href="6.3_dimension_reduction_methods.html">6.3 維度縮減方法 →</a>
+</div>
+
+<footer>
+  <p>ISLP 統計學習課程 · 第 6 章：線性模型選擇與正則化 · §6.2 收縮方法</p>
+  <p>Generated: 2026-06-25 · 基於 James, Witten, Hastie, Tibshirani (2023) ISLP</p>
+  <p>部署於 <a href="https://learn.dky.tw" style="color:var(--accent)">learn.dky.tw</a></p>
+</footer>
+
+<script src="../sidebar.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
+</html>
